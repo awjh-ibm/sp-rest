@@ -28,12 +28,14 @@ import spark.Spark;
 
 public class App {
     public static void main(String[] args) {
-    
+
         Options options = new Options();
 
         options.addRequiredOption("w", "wallet", true, "path to wallet");
         options.addRequiredOption("c", "connectionProfile", true, "path to connection profile");
         options.addRequiredOption("o", "org", true, "organisation ID");
+        options.addRequiredOption("i", "identity", true, "Identity");
+        options.addRequiredOption("p", "port", true, "API Port");
 
         CommandLineParser clp = new DefaultParser();
         CommandLine cmd = null;
@@ -43,7 +45,8 @@ public class App {
         } catch (ParseException e) {
             System.err.println("Failed to start SP REST. " + e.getMessage());
             System.exit(1);
-		}
+        }
+        Spark.port(Integer.parseInt(cmd.getOptionValue("p")));
 
         Path walletPath = Paths.get(cmd.getOptionValue("w"));
         Path connectionProfilePath = Paths.get(cmd.getOptionValue("c"));
@@ -65,12 +68,12 @@ public class App {
             System.exit(1);
         }
 
-        new FinanceRequestController(financeRequestService);
+        new FinanceRequestController(financeRequestService, cmd.getOptionValue("i"));
         new ShipmentController(shipmentService);
 
         Spark.internalServerError((req, res) -> {
             res.type("application/json");
-            
+
             Gson gson = new Gson();
             return gson.toJson(new BaseResponse(ResponseStatus.ERROR));
         });

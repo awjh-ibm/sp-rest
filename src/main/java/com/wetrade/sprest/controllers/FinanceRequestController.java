@@ -16,9 +16,9 @@ public class FinanceRequestController {
 
     private String format = "EEE MMM D HH:mm:ss Z yyy";
     private Gson gson = new GsonBuilder().setDateFormat(format).create();
-    private String identity = "admin"; // TODO use identity set on rest server setup
 
-    public FinanceRequestController(FinanceRequestService service) {
+    public FinanceRequestController(FinanceRequestService service, String identity) {
+        System.out.println(identity);
 
         Spark.get("/api/financerequests", (req, res) -> {
             res.type("application/json");
@@ -26,7 +26,7 @@ public class FinanceRequestController {
             BaseResponse response;
             Collection<FinanceRequest> requests;
             try {
-                requests = (Collection<FinanceRequest>) service.getFinanceRequests(identity, "CopenhagenBank");
+                requests = (Collection<FinanceRequest>) service.getFinanceRequests(identity, identity);
                 response = new BaseResponse(ResponseStatus.SUCCESS, gson.toJsonTree(requests));
             } catch (FabricProxyException exception) {
                 response = new BaseResponse(ResponseStatus.ERROR, gson.toJsonTree(exception));
