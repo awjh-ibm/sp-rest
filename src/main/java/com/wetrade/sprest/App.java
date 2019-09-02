@@ -52,7 +52,7 @@ public class App {
         Path walletPath = Paths.get(cmd.getOptionValue("w"));
         Path connectionProfilePath = Paths.get(cmd.getOptionValue("c"));
 
-        String channelName = "mychannel";
+        String channelName = "tradenet";
         String contractName = "contract";
         String org = cmd.getOptionValue("o");
 
