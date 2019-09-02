@@ -17,21 +17,23 @@ public class FinanceRequestServiceImpl implements FinanceRequestService {
     private FabricProxy proxy;
     String format = "EEE MMM d HH:mm:ss Z yyy";
     private Gson gson = new GsonBuilder().setDateFormat(format).create();
+    private String peer;
 
-    public FinanceRequestServiceImpl(FabricProxyConfig config) throws FabricProxyException {
+    public FinanceRequestServiceImpl(FabricProxyConfig config, String peer) throws FabricProxyException {
         this.proxy = new FabricProxy(config);
+        this.peer = peer;
     }
 
     @Override
     public void approveFinanceRequest(String identity, String id) throws Exception {
         String fcn = "approveFinanceRequest";
-        this.proxy.submitTransaction(identity, subContractName, fcn, id);
+        this.proxy.submitTransaction(new String[]{peer}, identity, subContractName, fcn, id);
     }
 
     @Override
     public void rejectFinanceRequest(String identity, String id) throws Exception {
         String fcn = "rejectFinanceRequest";
-        this.proxy.submitTransaction(identity, subContractName, fcn, id);
+        this.proxy.submitTransaction(new String[]{peer}, identity, subContractName, fcn, id);
     }
 
     @Override

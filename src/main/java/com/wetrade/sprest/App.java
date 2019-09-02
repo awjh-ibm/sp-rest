@@ -36,6 +36,7 @@ public class App {
         options.addRequiredOption("o", "org", true, "organisation ID");
         options.addRequiredOption("i", "identity", true, "Identity");
         options.addRequiredOption("p", "port", true, "API Port");
+        options.addRequiredOption("j", "peer", true, "Peer");
 
         CommandLineParser clp = new DefaultParser();
         CommandLine cmd = null;
@@ -61,15 +62,15 @@ public class App {
         ShipmentService shipmentService = null;
 
         try {
-            financeRequestService = new FinanceRequestServiceImpl(fpConfig);
-            shipmentService = new ShipmentServiceImpl(fpConfig);
+            financeRequestService = new FinanceRequestServiceImpl(fpConfig, cmd.getOptionValue("j"));
+            shipmentService = new ShipmentServiceImpl(fpConfig, cmd.getOptionValue("j"), cmd.getOptionValue("i"));
         } catch (FabricProxyException e) {
             System.err.println("Failed to start SP REST. " + e.getMessage());
             System.exit(1);
         }
 
         new FinanceRequestController(financeRequestService, cmd.getOptionValue("i"));
-        new ShipmentController(shipmentService);
+        new ShipmentController(shipmentService, cmd.getOptionValue("i"));
 
         Spark.internalServerError((req, res) -> {
             res.type("application/json");

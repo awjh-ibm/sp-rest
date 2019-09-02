@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import spark.Spark;
 
 public class ShipmentController {
-    public ShipmentController(ShipmentService service) {
+    public ShipmentController(ShipmentService service, String identity) {
         String format = "EEE MMM d HH:mm:ss Z yyy";
         Gson gson = new GsonBuilder().setDateFormat(format).create();
 
@@ -28,7 +28,7 @@ public class ShipmentController {
             Collection<Shipment> shipments;
 
             try {
-                shipments = (Collection<Shipment>) service.getShipments("andy");
+                shipments = (Collection<Shipment>) service.getShipments(identity);
                 response = new BaseResponse(ResponseStatus.SUCCESS, gson.toJsonTree(shipments));
             } catch (FabricProxyException exception) {
                 response = new BaseResponse(ResponseStatus.ERROR, gson.toJsonTree(exception));

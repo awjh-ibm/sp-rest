@@ -18,7 +18,6 @@ public class FinanceRequestController {
     private Gson gson = new GsonBuilder().setDateFormat(format).create();
 
     public FinanceRequestController(FinanceRequestService service, String identity) {
-        System.out.println(identity);
 
         Spark.get("/api/financerequests", (req, res) -> {
             res.type("application/json");
