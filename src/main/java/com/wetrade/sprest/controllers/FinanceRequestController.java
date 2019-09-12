@@ -10,6 +10,8 @@ import com.wetrade.sprest.services.FinanceRequestService;
 import com.wetrade.utils.BaseResponse;
 import com.wetrade.utils.ResponseStatus;
 
+import org.json.JSONObject;
+
 import spark.Spark;
 
 public class FinanceRequestController {
@@ -21,11 +23,14 @@ public class FinanceRequestController {
 
         Spark.get("/api/financerequests", (req, res) -> {
             res.type("application/json");
+            System.out.println(req.body());
+            String behalfOfId = new JSONObject(req.body()).getString("behalfOfId");
 
             BaseResponse response;
             Collection<FinanceRequest> requests;
             try {
-                requests = (Collection<FinanceRequest>) service.getFinanceRequests(identity, identity);
+                System.out.println(identity + " " + behalfOfId);
+                requests = (Collection<FinanceRequest>) service.getFinanceRequests(identity, behalfOfId);
                 response = new BaseResponse(ResponseStatus.SUCCESS, gson.toJsonTree(requests));
             } catch (FabricProxyException exception) {
                 response = new BaseResponse(ResponseStatus.ERROR, gson.toJsonTree(exception));

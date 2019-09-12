@@ -10,10 +10,13 @@ import com.google.gson.Gson;
 import com.wetrade.common.FabricProxyConfig;
 import com.wetrade.common.FabricProxyException;
 import com.wetrade.sprest.controllers.FinanceRequestController;
+import com.wetrade.sprest.controllers.PurchaseOrderController;
 import com.wetrade.sprest.controllers.ShipmentController;
 import com.wetrade.sprest.services.FinanceRequestService;
+import com.wetrade.sprest.services.PurchaseOrderService;
 import com.wetrade.sprest.services.ShipmentService;
 import com.wetrade.sprest.services.impl.FinanceRequestServiceImpl;
+import com.wetrade.sprest.services.impl.PurchaseOrderServiceFabricImpl;
 import com.wetrade.sprest.services.impl.ShipmentServiceImpl;
 import com.wetrade.utils.BaseResponse;
 import com.wetrade.utils.ResponseStatus;
@@ -60,10 +63,12 @@ public class App {
 
         FinanceRequestService financeRequestService = null;
         ShipmentService shipmentService = null;
+        PurchaseOrderService purchaseOrderService = null;
 
         try {
             financeRequestService = new FinanceRequestServiceImpl(fpConfig, cmd.getOptionValue("j"));
             shipmentService = new ShipmentServiceImpl(fpConfig, cmd.getOptionValue("j"), cmd.getOptionValue("i"));
+            purchaseOrderService = new PurchaseOrderServiceFabricImpl(fpConfig, cmd.getOptionValue("i"));
         } catch (FabricProxyException e) {
             System.err.println("Failed to start SP REST. " + e.getMessage());
             System.exit(1);
@@ -71,6 +76,7 @@ public class App {
 
         new FinanceRequestController(financeRequestService, cmd.getOptionValue("i"));
         new ShipmentController(shipmentService, cmd.getOptionValue("i"));
+        new PurchaseOrderController(purchaseOrderService, cmd.getOptionValue("i"));
 
         Spark.internalServerError((req, res) -> {
             res.type("application/json");

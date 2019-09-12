@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wetrade.assets.FinanceRequest;
+import com.wetrade.assets.enums.PurchaseOrderStatus;
 import com.wetrade.common.FabricProxy;
 import com.wetrade.common.FabricProxyConfig;
 import com.wetrade.common.FabricProxyException;
@@ -27,19 +28,19 @@ public class FinanceRequestServiceImpl implements FinanceRequestService {
     @Override
     public void approveFinanceRequest(String identity, String id) throws Exception {
         String fcn = "approveFinanceRequest";
-        this.proxy.submitTransaction(new String[]{peer}, identity, subContractName, fcn, id);
+        this.proxy.submitTransaction(new String[] { peer }, identity, subContractName, fcn, id);
     }
 
     @Override
     public void rejectFinanceRequest(String identity, String id) throws Exception {
         String fcn = "rejectFinanceRequest";
-        this.proxy.submitTransaction(new String[]{peer}, identity, subContractName, fcn, id);
+        this.proxy.submitTransaction(new String[] { peer }, identity, subContractName, fcn, id);
     }
 
     @Override
     public FinanceRequest getFinanceRequest(String identity, String id) throws Exception {
         String fcn = "getFinanceRequest";
-        String response = this.proxy.evaluateTransaction(identity, subContractName, fcn, new String[]{id});
+        String response = this.proxy.evaluateTransaction(identity, subContractName, fcn, id);
 
         FinanceRequest request = gson.fromJson(response, FinanceRequest.class);
         return request;
@@ -47,7 +48,10 @@ public class FinanceRequestServiceImpl implements FinanceRequestService {
 
     @Override
     public FinanceRequest getFinanceRequestByHash(String identity, String hash) throws Exception {
-        return null;
+        String fcn = "getFinanceRequestByHash";
+        String response = this.proxy.evaluateTransaction(identity, subContractName, fcn, hash);
+        FinanceRequest request = gson.fromJson(response, FinanceRequest.class);
+        return request;
     }
 
     @Override
@@ -57,5 +61,13 @@ public class FinanceRequestServiceImpl implements FinanceRequestService {
 
         FinanceRequest[] requests = gson.fromJson(response, FinanceRequest[].class);
         return Arrays.asList(requests);
+    }
+
+    @Override
+    public boolean verifyPurchaseOrder(String identity, String purchaseOrderId, String sellerId, Double price, String productDescriptor, PurchaseOrderStatus status) throws FabricProxyException {
+        String fcn = "verifyPurchaseOrder";
+        String response = this.proxy.evaluateTransaction(identity, subContractName, fcn, purchaseOrderId, sellerId, Double.toString(price), productDescriptor, status.toString());
+
+        return response == "true";
     }
 }
