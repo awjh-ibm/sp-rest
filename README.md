@@ -1,2 +1,2 @@
-# eprest
-The Enrolling Parties REST API. Used to talk to Fabric.
+# sprest
+The Service Provider REST API. Used to talk to Fabric.
